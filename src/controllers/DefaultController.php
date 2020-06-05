@@ -128,10 +128,9 @@ class DefaultController extends Controller
         // get the files mime type
         $mimeType = FileHelper::getMimeTypeByExtension($filename);
 
-        $contents = file_get_contents($filepath);
         $inline = $mimeType === 'application/pdf';
 
-        return Craft::$app->getResponse()->sendContentAsFile($contents, $filename, [
+        return Craft::$app->getResponse()->sendFile($filepath, $filename, [
             'mimeType' => $mimeType,
             'inline' => $inline,
         ]);
