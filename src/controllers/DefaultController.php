@@ -128,26 +128,13 @@ class DefaultController extends Controller
         // get the files mime type
         $mimeType = FileHelper::getMimeTypeByExtension($filename);
 
-        // use an optimized header for pdfs
-        if ($mimeType == "application/pdf") {
-            header('Content-type: application/pdf');
-            header('Content-Disposition: inline; filename="' . $filename . '"');
-            header('Content-Transfer-Encoding: binary');
-            header('Content-Length: ' . filesize($filepath));
-            header('Accept-Ranges: bytes');
-        }
-        else {
-            header('Content-type: '. $mimeType);
-        }
+        $contents = file_get_contents($filepath);
+        $inline = $mimeType === 'application/pdf';
 
-        // NOTE: we could also use file_get_contents($filepath)
-        // in contrast to readfile this will read the complete file content
-        // into a string which can then be sent to the output.
-        // This will however use more memory than the readfile-approach.
-
-        // render the file content directly to the output
-        readfile($filepath);
-
+        return Craft::$app->getResponse()->sendContentAsFile($contents, $filename, [
+            'mimeType' => $mimeType,
+            'inline' => $inline,
+        ]);
     }
 
 }
