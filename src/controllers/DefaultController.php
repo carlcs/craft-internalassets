@@ -111,6 +111,8 @@ class DefaultController extends Controller
 
         // permissions are still not granted
         if ($accessGranted === false) {
+            Craft::$app->controller->requireLogin();
+
             throw new HttpException(404, "Sorry. File not found or permission denied");
             return;
         }
